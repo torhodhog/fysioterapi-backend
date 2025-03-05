@@ -1,0 +1,3 @@
+/*
+  Modell for kommunikasjon mellom pasient og terapeut 
+*/

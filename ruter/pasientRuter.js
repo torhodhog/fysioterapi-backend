@@ -1,0 +1,3 @@
+/*
+  Rute for pasienthåndtering
+*/

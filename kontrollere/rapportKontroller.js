@@ -1,0 +1,3 @@
+/*
+  Håndterer rapportering 
+*/
