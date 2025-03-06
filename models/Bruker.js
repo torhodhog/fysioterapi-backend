@@ -1,0 +1,4 @@
+/*
+  Model for user authentication  
+  Models are used in MongoDB to define the structure of the data stored in the database.  
+*/

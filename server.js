@@ -1,3 +1,13 @@
+
+
+/*
+  Main server file for the backend API.
+  - Connects to MongoDB Atlas.
+  - Sets up Express with CORS and JSON support.
+  - Defines the main API entry point.
+  - Starts the server on the specified port.
+*/
+
 require('dotenv').config();
 const express = require('express');
 const mongoose = require('mongoose');
@@ -6,6 +16,15 @@ const cors = require('cors');
 const app = express();
 app.use(express.json());
 app.use(cors());
+
+const pasientRuter = require('./ruter/pasientRuter');
+app.use('/api/pasienter', pasientRuter);
+const meldingRuter = require('./ruter/meldingRuter');
+app.use('/api/meldinger', meldingRuter);
+const rapportRuter = require('./ruter/rapportRuter');
+app.use('/api/rapporter', rapportRuter);
+
+
 
 // Koble til MongoDB Atlas
 mongoose.connect(process.env.MONGO_URI, {

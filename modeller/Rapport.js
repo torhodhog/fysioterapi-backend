@@ -1,3 +1,0 @@
-/*
-  Modell for pasientens rapportering tilbake til terapeuten
-*/
