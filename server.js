@@ -1,5 +1,3 @@
-
-
 /*
   Main server file for the backend API.
   - Connects to MongoDB Atlas.
@@ -15,6 +13,8 @@ const cors = require('cors');
 
 const app = express();
 app.use(express.json());
+
+// Allow all domains (not recommended for production)
 app.use(cors());
 
 const pasientRuter = require('./ruter/pasientRuter');
@@ -23,8 +23,6 @@ const meldingRuter = require('./ruter/meldingRuter');
 app.use('/api/meldinger', meldingRuter);
 const rapportRuter = require('./ruter/rapportRuter');
 app.use('/api/rapporter', rapportRuter);
-
-
 
 // Koble til MongoDB Atlas
 mongoose.connect(process.env.MONGO_URI, {
