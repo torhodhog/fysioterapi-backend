@@ -42,20 +42,23 @@ const loginUser = async (req, res) => {
     const isMatch = await bcrypt.compare(passord, bruker.passord);
     if (!isMatch) return res.status(400).json({ error: "Ugyldig e-post eller passord" });
 
-    // 🚨 SJEKK BRUKERENS ROLLE 🚨
-    if (bruker.rolle !== "admin") {
-      return res.status(403).json({ error: "Du har ikke tilgang til admin-panelet" });
+    // Sjekk om bruker har riktig rolle
+    if (bruker.rolle !== "terapeut") {
+      return res.status(403).json({ error: "Ingen tilgang" });
     }
 
     // Lag JWT-token
-    const token = jwt.sign({ id: bruker._id, rolle: bruker.rolle }, process.env.JWT_SECRET, { expiresIn: "1h" });
+    const token = jwt.sign(
+      { id: bruker._id, rolle: bruker.rolle },
+      process.env.JWT_SECRET,
+      { expiresIn: "1h" }
+    );
 
     res.json({ token });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
-
 
 // Hent innlogget bruker
 const getMe = async (req, res) => {
