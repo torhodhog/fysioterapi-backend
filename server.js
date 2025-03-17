@@ -13,18 +13,22 @@ const cors = require('cors');
 
 const app = express();
 app.use(express.json());
-
-// Allow all domains (not recommended for production)
 app.use(cors());
 
-const pasientRuter = require('./ruter/pasientRuter');
-app.use('/api/pasienter', pasientRuter);
-const meldingRuter = require('./ruter/meldingRuter');
-app.use('/api/meldinger', meldingRuter);
-const rapportRuter = require('./ruter/rapportRuter');
-app.use('/api/rapporter', rapportRuter);
+const verifyToken = require("./middleware/authMiddleware");
 
-// Koble til MongoDB Atlas
+// Import routes
+const authRuter = require('./ruter/authRuter');
+const pasientRuter = require('./ruter/pasientRuter');
+const meldingRuter = require('./ruter/meldingRuter');
+const rapportRuter = require('./ruter/rapportRuter');
+
+app.use('/api/auth', authRuter);
+app.use('/api/pasienter', verifyToken, pasientRuter);
+app.use('/api/meldinger', verifyToken, meldingRuter);
+app.use('/api/rapporter', verifyToken, rapportRuter);
+
+// Koble til MongoDB
 mongoose.connect(process.env.MONGO_URI, {
   useNewUrlParser: true,
   useUnifiedTopology: true
