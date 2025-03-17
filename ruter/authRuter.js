@@ -8,6 +8,7 @@
 const express = require("express");
 const { registerUser, loginUser, getMe } = require("../controllers/authController");
 const verifyToken = require("../middleware/authMiddleware");
+const Bruker = require("../models/Bruker"); //
 
 const router = express.Router();
 
