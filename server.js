@@ -1,43 +1,51 @@
 /*
   Main server file for the backend API.
-  - Connects to MongoDB Atlas.
+  - Connects to MongoDB.
   - Sets up Express with CORS and JSON support.
   - Defines the main API entry point.
+  - Secures routes with authentication.
   - Starts the server on the specified port.
 */
 
-require('dotenv').config();
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
+require("dotenv").config();
+const express = require("express");
+const mongoose = require("mongoose");
+const cors = require("cors");
+const morgan = require("morgan");
 
 const app = express();
-app.use(express.json());
-app.use(cors());
 
+// Middleware
+app.use(express.json()); // Parse JSON requests
+app.use(cors()); // Enable CORS for all domains (adjust for production)
+app.use(morgan("dev")); // Logger for debugging requests
+
+// Import authentication middleware
 const verifyToken = require("./middleware/authMiddleware");
 
 // Import routes
-const authRuter = require('./ruter/authRuter');
-const pasientRuter = require('./ruter/pasientRuter');
-const meldingRuter = require('./ruter/meldingRuter');
-const rapportRuter = require('./ruter/rapportRuter');
+const authRuter = require("./ruter/authRuter");
+const pasientRuter = require("./ruter/pasientRuter");
+const meldingRuter = require("./ruter/meldingRuter");
+const rapportRuter = require("./ruter/rapportRuter");
 
-app.use('/api/auth', authRuter);
-app.use('/api/pasienter', verifyToken, pasientRuter);
-app.use('/api/meldinger', verifyToken, meldingRuter);
-app.use('/api/rapporter', verifyToken, rapportRuter);
+// Define routes
+app.use("/api/auth", authRuter);
+app.use("/api/pasienter", verifyToken, pasientRuter);
+app.use("/api/meldinger", verifyToken, meldingRuter);
+app.use("/api/rapporter", verifyToken, rapportRuter);
 
-// Koble til MongoDB
-mongoose.connect(process.env.MONGO_URI, {
-  useNewUrlParser: true,
-  useUnifiedTopology: true
-}).then(() => console.log('✅ MongoDB Connected'))
-  .catch(err => console.error('❌ MongoDB Connection Error:', err));
+// MongoDB Connection
+mongoose
+  .connect(process.env.MONGO_URI)
+  .then(() => console.log("✅ MongoDB Connected"))
+  .catch((err) => console.error("❌ MongoDB Connection Error:", err));
 
-app.get('/', (req, res) => {
-  res.send('Backend is running 🚀');
+// Root Route (Health Check)
+app.get("/", (req, res) => {
+  res.send("✅ Backend is running 🚀");
 });
 
+// Server Start
 const PORT = process.env.PORT || 5002;
 app.listen(PORT, () => console.log(`🚀 Server running on port ${PORT}`));

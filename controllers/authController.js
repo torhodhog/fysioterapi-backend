@@ -51,4 +51,17 @@ const loginUser = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser };
+// Hent innlogget bruker
+const getMe = async (req, res) => {
+  try {
+    const bruker = await Bruker.findById(req.user.id).select("-passord"); // Ekskluder passord fra responsen
+    if (!bruker) {
+      return res.status(404).json({ error: "Bruker ikke funnet" });
+    }
+    res.json(bruker);
+  } catch (err) {
+    res.status(500).json({ error: "Serverfeil" });
+  }
+};
+
+module.exports = { registerUser, loginUser, getMe };
