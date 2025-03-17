@@ -13,6 +13,16 @@ const router = express.Router();
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
-router.get("/me", verifyToken, getMe); // Ny rute for å hente innlogget bruker
+router.get("/me", verifyToken, async (req, res) => {
+  try {
+    const bruker = await Bruker.findById(req.user.id).select("-passord"); // Henter bruker uten passord
+    if (!bruker) return res.status(404).json({ error: "Bruker ikke funnet" });
+
+    res.json(bruker);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+});
+
 
 module.exports = router;
