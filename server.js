@@ -11,14 +11,14 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const morgan = require("morgan");
+
 
 const app = express();
 
 // Middleware
 app.use(express.json()); // Parse JSON requests
 app.use(cors()); // Enable CORS for all domains (adjust for production)
-app.use(morgan("dev")); // Logger for debugging requests
+
 
 // Import authentication middleware
 const verifyToken = require("./middleware/authMiddleware");
