@@ -14,11 +14,12 @@ const createPatient = async (req, res) => {
       return res.status(403).json({ error: "Kun terapeuter kan opprette pasienter" });
     }
 
+    // 🔥 Her sikrer vi at pasienten får riktig terapeut tilknyttet
     const newPatient = new Pasient({
       navn,
       alder,
       diagnose,
-      terapeut: req.user.id, // 🔥 Knytter pasienten til terapeuten som oppretter den
+      terapeut: req.user.id, // 🛠️ Dette sikrer at pasienten blir koblet til terapeuten
     });
 
     await newPatient.save();
@@ -28,15 +29,16 @@ const createPatient = async (req, res) => {
   }
 };
 
+
 // 🔵 Hente ALLE pasientene for den innloggede terapeuten
-const getAllPatients = async (req, res) => {
+const getPatientsForTherapist = async (req, res) => {
   try {
     if (req.user.rolle !== "terapeut") {
       return res.status(403).json({ error: "Kun terapeuter kan hente pasienter" });
     }
 
-    const patients = await Pasient.find({ terapeut: req.user.id }); // 🔥 Henter kun pasienter tilknyttet terapeuten
-    res.json(patients);
+    const pasienter = await Pasient.find({ brukerId: req.user.id }); // 🔥 Henter kun pasienter tilknyttet terapeuten
+    res.json(pasienter);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -50,7 +52,7 @@ const updatePatient = async (req, res) => {
     }
 
     const updatedPatient = await Pasient.findOneAndUpdate(
-      { _id: req.params.id, terapeut: req.user.id }, // 🔥 Sikrer at terapeuten kun kan oppdatere egne pasienter
+      { _id: req.params.id, brukerId: req.user.id }, // 🔥 Sikrer at terapeuten kun kan oppdatere egne pasienter
       req.body,
       { new: true }
     );
@@ -71,7 +73,7 @@ const deletePatient = async (req, res) => {
 
     const deletedPatient = await Pasient.findOneAndDelete({
       _id: req.params.id,
-      terapeut: req.user.id, // 🔥 Sikrer at terapeuten kun kan slette egne pasienter
+      brukerId: req.user.id, // 🔥 Sikrer at terapeuten kun kan slette egne pasienter
     });
 
     if (!deletedPatient) return res.status(404).json({ error: "Pasient ikke funnet" });
@@ -81,15 +83,4 @@ const deletePatient = async (req, res) => {
   }
 };
 
-// Hent pasienter for innlogget terapeut
-const getMyPatients = async (req, res) => {
-  try {
-    const pasienter = await Pasient.find({ brukerId: req.user.id }); // Henter pasienter for den innloggede brukeren
-    res.json(pasienter);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-};
-
-
-module.exports = { createPatient, getAllPatients, updatePatient, deletePatient };
+module.exports = { createPatient, getPatientsForTherapist, updatePatient, deletePatient };

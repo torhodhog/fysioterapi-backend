@@ -3,23 +3,22 @@
   This file defines API endpoints for creating, retrieving, updating, and deleting patients.
 */
 
-const express = require('express');
+const express = require("express");
+const { createPatient, getPatientsForTherapist, updatePatient, deletePatient } = require("../controllers/pasientController");
+const verifyToken = require("../middleware/authMiddleware");
+
 const router = express.Router();
-const { createPatient, getAllPatients, updatePatient, deletePatient } = require('../controllers/pasientController');
 
-// Route to create a new patient
-router.post('/', createPatient);
+// Rute for å hente pasientene som tilhører innlogget terapeut
+router.get("/mine", verifyToken, getPatientsForTherapist);
 
-// Route to get all patients
-router.get('/', getAllPatients);
+// Opprette en ny pasient
+router.post("/", verifyToken, createPatient);
 
-// Route to update a patient
-router.put('/:id', updatePatient);
+// Oppdatere en pasient
+router.put("/:id", verifyToken, updatePatient);
 
-// Route to delete a patient
-router.delete('/:id', deletePatient);
-
-router.get("/mine", verifyToken, getMyPatients);
-
+// Slette en pasient
+router.delete("/:id", verifyToken, deletePatient);
 
 module.exports = router;
