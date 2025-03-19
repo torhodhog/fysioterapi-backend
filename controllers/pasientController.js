@@ -81,4 +81,15 @@ const deletePatient = async (req, res) => {
   }
 };
 
+// Hent pasienter for innlogget terapeut
+const getMyPatients = async (req, res) => {
+  try {
+    const pasienter = await Pasient.find({ brukerId: req.user.id }); // Henter pasienter for den innloggede brukeren
+    res.json(pasienter);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
 module.exports = { createPatient, getAllPatients, updatePatient, deletePatient };

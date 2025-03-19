@@ -19,4 +19,7 @@ router.put('/:id', updatePatient);
 // Route to delete a patient
 router.delete('/:id', deletePatient);
 
+router.get("/mine", verifyToken, getMyPatients);
+
+
 module.exports = router;
