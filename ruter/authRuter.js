@@ -8,22 +8,11 @@
 const express = require("express");
 const { registerUser, loginUser, getMe } = require("../controllers/authController");
 const verifyToken = require("../middleware/authMiddleware");
-const Bruker = require("../models/Bruker"); //
 
 const router = express.Router();
 
 router.post("/register", registerUser);
 router.post("/login", loginUser);
-router.get("/me", verifyToken, async (req, res) => {
-  try {
-    const bruker = await Bruker.findById(req.user.id).select("-passord"); // Henter bruker uten passord
-    if (!bruker) return res.status(404).json({ error: "Bruker ikke funnet" });
-
-    res.json(bruker);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
-  }
-});
-
+router.get("/me", verifyToken, getMe); // Bruker nå getMe-funksjonen fra authController
 
 module.exports = router;
