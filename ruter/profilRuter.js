@@ -1,10 +1,15 @@
+/*
+  Routes for user profiles.
+  - Handles profile image uploads using Cloudinary.
+*/
+
 const express = require("express");
-const { createOrUpdateProfile, getProfile } = require("../controllers/profilController");
+const { upload, uploadProfileImage } = require("../controllers/profilController");
 const verifyToken = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
-router.get("/me", verifyToken, getProfile); // Hent terapeutens profil
-router.post("/", verifyToken, createOrUpdateProfile); // Opprett eller oppdater profil
+// 📌 Rute for å laste opp profilbilde
+router.post("/upload", verifyToken, upload.single("image"), uploadProfileImage);
 
 module.exports = router;
