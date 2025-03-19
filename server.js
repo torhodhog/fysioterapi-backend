@@ -11,14 +11,20 @@ require("dotenv").config();
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+const cloudinary = require("cloudinary").v2;
 
+// Cloudinary Configuration
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
+});
 
 const app = express();
 
 // Middleware
 app.use(express.json()); // Parse JSON requests
 app.use(cors()); // Enable CORS for all domains (adjust for production)
-
 
 // Import authentication middleware
 const verifyToken = require("./middleware/authMiddleware");
