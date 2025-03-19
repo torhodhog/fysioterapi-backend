@@ -5,7 +5,7 @@
 
 const Pasient = require("../models/Pasient");
 
-// 🟢 Opprette ny pasient (kun tilgjengelig for terapeuter)
+//  Opprette ny pasient (kun tilgjengelig for terapeuter)
 const createPatient = async (req, res) => {
   try {
     const { navn, alder, diagnose } = req.body;
@@ -14,12 +14,12 @@ const createPatient = async (req, res) => {
       return res.status(403).json({ error: "Kun terapeuter kan opprette pasienter" });
     }
 
-    // 🔥 Her sikrer vi at pasienten får riktig terapeut tilknyttet
+    //  Her sikrer vi at pasienten får riktig terapeut tilknyttet
     const newPatient = new Pasient({
       navn,
       alder,
       diagnose,
-      terapeut: req.user.id, // 🛠️ Dette sikrer at pasienten blir koblet til terapeuten
+      terapeut: req.user.id, 
     });
 
     await newPatient.save();
@@ -30,21 +30,22 @@ const createPatient = async (req, res) => {
 };
 
 
-// 🔵 Hente ALLE pasientene for den innloggede terapeuten
+//  Hente ALLE pasientene for den innloggede terapeuten
 const getPatientsForTherapist = async (req, res) => {
   try {
     if (req.user.rolle !== "terapeut") {
       return res.status(403).json({ error: "Kun terapeuter kan hente pasienter" });
     }
 
-    const pasienter = await Pasient.find({ brukerId: req.user.id }); // 🔥 Henter kun pasienter tilknyttet terapeuten
+    const pasienter = await Pasient.find({ terapeut: req.user.id });
+
     res.json(pasienter);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-// 🟡 Oppdatere en pasient (kun hvis terapeuten eier pasienten)
+// Oppdatere en pasient (kun hvis terapeuten eier pasienten)
 const updatePatient = async (req, res) => {
   try {
     if (req.user.rolle !== "terapeut") {
@@ -52,7 +53,7 @@ const updatePatient = async (req, res) => {
     }
 
     const updatedPatient = await Pasient.findOneAndUpdate(
-      { _id: req.params.id, brukerId: req.user.id }, // 🔥 Sikrer at terapeuten kun kan oppdatere egne pasienter
+      { _id: req.params.id, brukerId: req.user.id }, // 
       req.body,
       { new: true }
     );
@@ -64,7 +65,7 @@ const updatePatient = async (req, res) => {
   }
 };
 
-// 🔴 Slette en pasient (kun hvis terapeuten eier pasienten)
+// Slette en pasient (kun hvis terapeuten eier pasienten)
 const deletePatient = async (req, res) => {
   try {
     if (req.user.rolle !== "terapeut") {
