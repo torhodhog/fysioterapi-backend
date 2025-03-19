@@ -11,8 +11,9 @@ const verifyToken = require("../middleware/authMiddleware");
 
 const router = express.Router();
 
+// Brukerruter
 router.post("/register", registerUser);
 router.post("/login", loginUser);
-router.get("/me", verifyToken, getMe); // Bruker nå getMe-funksjonen fra authController
+router.get("/me", verifyToken, getMe); // Krever autentisering
 
 module.exports = router;

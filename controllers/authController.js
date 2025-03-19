@@ -8,11 +8,12 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Bruker = require("../models/Bruker");
 
+// Registrer ny bruker
 const registerUser = async (req, res) => {
   try {
     const { navn, epost, passord, rolle } = req.body;
 
-    // Sjekk om bruker allerede finnes
+    // Sjekk om e-post allerede er i bruk
     let bruker = await Bruker.findOne({ epost });
     if (bruker) return res.status(400).json({ error: "E-post allerede i bruk" });
 
@@ -20,7 +21,7 @@ const registerUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassord = await bcrypt.hash(passord, salt);
 
-    // Lagre ny bruker
+    // Opprett ny bruker
     bruker = new Bruker({ navn, epost, passord: hashedPassord, rolle });
     await bruker.save();
 
@@ -30,11 +31,12 @@ const registerUser = async (req, res) => {
   }
 };
 
+// Logg inn bruker
 const loginUser = async (req, res) => {
   try {
     const { epost, passord } = req.body;
 
-    // Finn bruker
+    // Finn bruker i databasen
     const bruker = await Bruker.findOne({ epost });
     if (!bruker) return res.status(400).json({ error: "Ugyldig e-post eller passord" });
 
@@ -42,12 +44,7 @@ const loginUser = async (req, res) => {
     const isMatch = await bcrypt.compare(passord, bruker.passord);
     if (!isMatch) return res.status(400).json({ error: "Ugyldig e-post eller passord" });
 
-    // Sjekk om bruker har riktig rolle
-    if (bruker.rolle !== "terapeut") {
-      return res.status(403).json({ error: "Ingen tilgang" });
-    }
-
-    // Lag JWT-token
+    // Generer JWT-token
     const token = jwt.sign(
       { id: bruker._id, rolle: bruker.rolle },
       process.env.JWT_SECRET,
@@ -63,7 +60,7 @@ const loginUser = async (req, res) => {
 // Hent innlogget bruker
 const getMe = async (req, res) => {
   try {
-    const bruker = await Bruker.findById(req.user.id).select("-passord"); // Ekskluder passord fra responsen
+    const bruker = await Bruker.findById(req.user.id).select("-passord"); // Ekskluder passord
     if (!bruker) {
       return res.status(404).json({ error: "Bruker ikke funnet" });
     }
@@ -72,8 +69,5 @@ const getMe = async (req, res) => {
     res.status(500).json({ error: "Serverfeil" });
   }
 };
-
-module.exports = { registerUser, loginUser, getMe };
-
 
 module.exports = { registerUser, loginUser, getMe };
