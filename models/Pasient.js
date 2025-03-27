@@ -16,11 +16,19 @@ const pasientSchema = new mongoose.Schema(
 
     diagnose: { type: String, required: true },
     smerterate: { type: Number, min: 0, max: 10 },
-    fremgang: { type: String }, // f.eks. "Blitt bedre", "Uendret", "Forverret"
+    fremgang: { type: String },
     henvisendeLege: { type: String },
     kommentar: { type: String },
 
     terapeut: { type: mongoose.Schema.Types.ObjectId, ref: "Bruker", required: true },
+
+    // 🔥 Historikk for smerterate over tid
+    smertehistorikk: [
+      {
+        verdi: { type: Number, required: true },
+        dato: { type: Date, default: Date.now },
+      }
+    ]
   },
   { timestamps: true }
 );

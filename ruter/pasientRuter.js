@@ -9,7 +9,8 @@ const {
   getPatientsForTherapist,
   getSinglePatient, // 👈
   updatePatient,
-  deletePatient
+  deletePatient,
+  leggTilSmerterate, 
 } = require("../controllers/pasientController");
 const verifyToken = require("../middleware/authMiddleware");
 
@@ -20,5 +21,7 @@ router.get("/:id", verifyToken, getSinglePatient);
 router.post("/", verifyToken, createPatient);
 router.put("/:id", verifyToken, updatePatient);
 router.delete("/:id", verifyToken, deletePatient);
+router.post("/:id/smerterate", verifyToken, leggTilSmerterate);
+
 
 module.exports = router;
