@@ -34,6 +34,7 @@ const createPatient = async (req, res) => {
       henvisendeLege,
       kommentar,
       terapeut: req.user.id,
+      brukerId: req.body.brukerId || null,
     });
 
     await newPatient.save();
@@ -115,18 +116,26 @@ const leggTilSmerterate = async (req, res) => {
       return res.status(400).json({ error: "Smerterate må være mellom 0 og 10" });
     }
 
-    const pasient = await Pasient.findOneAndUpdate(
-      { _id: id, terapeut: req.user.id },
-      { $push: { smertehistorikk: { verdi } } },
-      { new: true }
-    );
-
+    const pasient = await Pasient.findById(id);
     if (!pasient) return res.status(404).json({ error: "Pasient ikke funnet" });
+
+    const erTerapeut = req.user.rolle === "terapeut" && pasient.terapeut.toString() === req.user.id;
+    const erPasient = req.user.rolle === "pasient" && pasient.brukerId?.toString() === req.user.id;
+
+    if (!erTerapeut && !erPasient) {
+      return res.status(403).json({ error: "Ingen tilgang til å oppdatere denne pasienten" });
+    }
+
+    pasient.smertehistorikk.push({ verdi, dato: new Date() });
+    await pasient.save();
+
     res.json(pasient);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
+
 
 
 module.exports = {
