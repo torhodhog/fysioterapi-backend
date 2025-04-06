@@ -1,8 +1,3 @@
-/*
-  Model for patient data.
-  Defines the structure for storing patient information in MongoDB.
-*/
-
 const mongoose = require("mongoose");
 
 const pasientSchema = new mongoose.Schema(
@@ -28,9 +23,13 @@ const pasientSchema = new mongoose.Schema(
         verdi: { type: Number, required: true },
         dato: { type: Date, default: Date.now },
       }
-    ]
+    ],
+
+    // Gjør brukerId valgfritt for oppretting
+    brukerId: { type: mongoose.Schema.Types.ObjectId, ref: "Bruker", required: false },  // ENDRET TIL false
   },
   { timestamps: true }
 );
+
 
 module.exports = mongoose.model("Pasient", pasientSchema);

@@ -1,25 +1,22 @@
-const Pasient = require("../models/Pasient");
+// pasientController.js
 
-// Opprette ny pasient (kun tilgjengelig for terapeuter)
+const mongoose = require("mongoose");
+const Pasient = require("../models/Pasient");
+const Bruker = require("../models/Bruker");
+const Rapport = require("../models/Rapport");
+
+// ✅ Opprette ny pasient (kun for terapeuter)
 const createPatient = async (req, res) => {
   try {
-    const {
-      navn,
-      alder,
-      kjønn,
-      adresse,
-      telefon,
-      epost,
-      diagnose,
-      smerterate,
-      fremgang,
-      henvisendeLege,
-      kommentar,
-    } = req.body;
-
     if (req.user.rolle !== "terapeut") {
       return res.status(403).json({ error: "Kun terapeuter kan opprette pasienter" });
     }
+
+    const {
+      navn, alder, kjønn, adresse, telefon, epost,
+      diagnose, smerterate, fremgang,
+      henvisendeLege, kommentar, brukerId
+    } = req.body;
 
     const newPatient = new Pasient({
       navn,
@@ -34,7 +31,7 @@ const createPatient = async (req, res) => {
       henvisendeLege,
       kommentar,
       terapeut: req.user.id,
-      brukerId: req.body.brukerId || null,
+      brukerId: brukerId ? new mongoose.Types.ObjectId(brukerId) : null,
     });
 
     await newPatient.save();
@@ -44,7 +41,7 @@ const createPatient = async (req, res) => {
   }
 };
 
-// Hente alle pasientene for den innloggede terapeuten
+// ✅ Hente ALLE pasienter knyttet til innlogget terapeut
 const getPatientsForTherapist = async (req, res) => {
   try {
     if (req.user.rolle !== "terapeut") {
@@ -58,7 +55,7 @@ const getPatientsForTherapist = async (req, res) => {
   }
 };
 
-// Hente én spesifikk pasient med ID
+// ✅ Hente ÉN spesifikk pasient (kun for tilknyttet terapeut)
 const getSinglePatient = async (req, res) => {
   try {
     const pasient = await Pasient.findOne({
@@ -73,7 +70,7 @@ const getSinglePatient = async (req, res) => {
   }
 };
 
-// Oppdatere en pasient
+// ✅ Oppdatere pasient (kun for tilknyttet terapeut)
 const updatePatient = async (req, res) => {
   try {
     const updated = await Pasient.findOneAndUpdate(
@@ -90,7 +87,7 @@ const updatePatient = async (req, res) => {
   }
 };
 
-// Slette en pasient
+// ✅ Slette pasient (kun for tilknyttet terapeut)
 const deletePatient = async (req, res) => {
   try {
     const deleted = await Pasient.findOneAndDelete({
@@ -106,7 +103,7 @@ const deletePatient = async (req, res) => {
   }
 };
 
-// Legg til ny smerterate i historikk
+// ✅ Legg til smerterate med ID (både pasient og terapeut kan gjøre det)
 const leggTilSmerterate = async (req, res) => {
   try {
     const { id } = req.params;
@@ -135,14 +132,85 @@ const leggTilSmerterate = async (req, res) => {
   }
 };
 
+// ✅ Pasienten selv legger inn smerte (uten å vite ID)
+const leggTilEgenSmerte = async (req, res) => {
+  try {
+    if (req.user.rolle !== "pasient") {
+      return res.status(403).json({ error: "Kun pasienter har tilgang" });
+    }
+
+    const pasient = await Pasient.findOne({ brukerId: req.user.id });
+    if (!pasient) return res.status(404).json({ error: "Pasient ikke funnet" });
+
+    const { verdi } = req.body;
+    if (typeof verdi !== "number" || verdi < 0 || verdi > 10) {
+      return res.status(400).json({ error: "Smerterate må være mellom 0 og 10" });
+    }
+
+    pasient.smertehistorikk.push({ verdi, dato: new Date() });
+    await pasient.save();
+
+    res.json({ message: "Smerterate lagt til", pasient });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+// ✅ Hent ALT om innlogget pasient (info, tilhørende pasientdata og rapporter)
+const getMyInfo = async (req, res) => {
+  try {
+    if (req.user.rolle !== "pasient") {
+      return res.status(403).json({ error: "Kun pasienter har tilgang til denne ruten" });
+    }
+
+    const bruker = await Bruker.findById(req.user.id).select("-passord");
+    const pasient = await Pasient.findOne({ brukerId: req.user.id });
+    const rapporter = pasient ? await Rapport.find({ pasientId: pasient._id }) : [];
+
+    if (!bruker || !pasient) {
+      return res.status(404).json({ error: "Pasientdata ikke funnet" });
+    }
+
+    res.json({ bruker, pasient, rapporter });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const kobleBrukerTilPasient = async (req, res) => {
+  try {
+    if (req.user.rolle !== "pasient") {
+      return res.status(403).json({ error: "Kun pasienter kan koble seg til en pasientprofil" });
+    }
+
+    const { epost } = req.body;
+
+    const pasient = await Pasient.findOne({ epost });
+    if (!pasient) {
+      return res.status(404).json({ error: "Fant ingen pasient med den e-posten" });
+    }
+
+    pasient.brukerId = req.user.id; // Koble bruker til pasient
+    await pasient.save();
+
+    res.json({ message: "Bruker koblet til pasientprofil", pasient });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
 
 
+// Eksporter alle funksjoner
 module.exports = {
   createPatient,
   getPatientsForTherapist,
   getSinglePatient,
-  updatePatient, 
+  updatePatient,
   deletePatient,
   leggTilSmerterate,
+  leggTilEgenSmerte,
+  getMyInfo,
+  kobleBrukerTilPasient,
 };
