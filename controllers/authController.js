@@ -21,8 +21,11 @@ const registerUser = async (req, res) => {
     const salt = await bcrypt.genSalt(10);
     const hashedPassord = await bcrypt.hash(passord, salt);
 
+    // Sett rolle automatisk: hvis ikke terapeut → pasient
+    const brukerRolle = rolle === "terapeut" ? "terapeut" : "pasient";
+
     // Opprett ny bruker
-    bruker = new Bruker({ navn, epost, passord: hashedPassord, rolle });
+    bruker = new Bruker({ navn, epost, passord: hashedPassord, rolle: brukerRolle });
     await bruker.save();
 
     res.status(201).json({ message: "Bruker opprettet" });
