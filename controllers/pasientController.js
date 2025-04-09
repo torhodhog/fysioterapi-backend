@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 const Pasient = require("../models/Pasient");
 const Bruker = require("../models/Bruker");
 const Rapport = require("../models/Rapport");
+const Varsel = require("../models/Varsel"); 
 
 // ✅ Opprette ny pasient (kun for terapeuter)
 const createPatient = async (req, res) => {
@@ -133,6 +134,7 @@ const leggTilSmerterate = async (req, res) => {
 };
 
 // ✅ Pasienten selv legger inn smerte (uten å vite ID)
+// ✅ Pasienten selv legger inn smerte (uten å vite ID)
 const leggTilEgenSmerte = async (req, res) => {
   try {
     if (req.user.rolle !== "pasient") {
@@ -147,14 +149,22 @@ const leggTilEgenSmerte = async (req, res) => {
       return res.status(400).json({ error: "Smerterate må være mellom 0 og 10" });
     }
 
+    // 👉 Legg til ny smerte i historikken
     pasient.smertehistorikk.push({ verdi, dato: new Date() });
     await pasient.save();
+
+    // 👉 Lag varsel for terapeut
+    await Varsel.create({
+      pasientId: pasient._id,
+      melding: "Pasienten har registrert en ny smerterate.",
+    });
 
     res.json({ message: "Smerterate lagt til", pasient });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 
 // ✅ Hent ALT om innlogget pasient (info, tilhørende pasientdata og rapporter)

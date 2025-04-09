@@ -35,6 +35,7 @@ const pasientRuter = require("./ruter/pasientRuter");
 const meldingRuter = require("./ruter/meldingRuter");
 const rapportRuter = require("./ruter/rapportRuter");
 const profilRuter = require("./ruter/profilRuter");
+const varselRoutes = require("./ruter/varselRuter");
 
 // Define routes
 app.use("/api/auth", authRuter);
@@ -42,6 +43,7 @@ app.use("/api/pasienter", verifyToken, pasientRuter);
 app.use("/api/meldinger", verifyToken, meldingRuter);
 app.use("/api/rapporter", verifyToken, rapportRuter);
 app.use("/api/profil", verifyToken, profilRuter);
+app.use("/api/varsler", varselRoutes);
 
 // MongoDB Connection
 mongoose

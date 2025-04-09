@@ -4,17 +4,27 @@
 */
 
 const Rapport = require('../models/Rapport');
+const Varsel = require("../models/Varsel");
 
-// Submit a new report
+
+
 const submitReport = async (req, res) => {
   try {
     const newReport = new Rapport(req.body);
     await newReport.save();
+
+    // Legg til varsel
+    await Varsel.create({
+      pasientId: req.body.pasientId,
+      melding: "Ny pasientrapport er lagt til.",
+    });
+
     res.status(201).json(newReport);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
+
 
 // Retrieve all reports for a specific patient
 const getReportsForPatient = async (req, res) => {
