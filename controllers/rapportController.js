@@ -10,13 +10,22 @@ const Varsel = require("../models/Varsel");
 
 const submitReport = async (req, res) => {
   try {
-    const newReport = new Rapport(req.body);
+    const { pasientId, innhold, dato } = req.body;
+
+    const newReport = new Rapport({
+      pasientId,
+      innhold,
+      dato: dato || new Date(),
+    });
+
     await newReport.save();
 
-    // Legg til varsel
+    // Opprett varsel til terapeut
     await Varsel.create({
-      pasientId: req.body.pasientId,
-      melding: "Ny pasientrapport er lagt til.",
+      pasientId: pasientId,
+      tekst: "Ny pasientrapport er lagt til.",
+      type: "rapport",
+      terapeutId: req.user.id, 
     });
 
     res.status(201).json(newReport);

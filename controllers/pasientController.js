@@ -149,11 +149,11 @@ const leggTilEgenSmerte = async (req, res) => {
       return res.status(400).json({ error: "Smerterate må være mellom 0 og 10" });
     }
 
-    // 👉 Legg til ny smerte i historikken
+  
     pasient.smertehistorikk.push({ verdi, dato: new Date() });
     await pasient.save();
 
-    // 👉 Lag varsel for terapeut
+    
     await Varsel.create({
       pasientId: pasient._id,
       melding: "Pasienten har registrert en ny smerterate.",
