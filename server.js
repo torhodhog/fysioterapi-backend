@@ -36,14 +36,16 @@ const meldingRuter = require("./ruter/meldingRuter");
 const rapportRuter = require("./ruter/rapportRuter");
 const profilRuter = require("./ruter/profilRuter");
 const varselRoutes = require("./ruter/varselRuter");
+const loggRuter = require("./ruter/loggRuter"); // Logg-ruten for økter
 
 // Define routes
-app.use("/api/auth", authRuter);
-app.use("/api/pasienter", verifyToken, pasientRuter);
-app.use("/api/meldinger", verifyToken, meldingRuter);
-app.use("/api/rapporter", verifyToken, rapportRuter);
-app.use("/api/profil", verifyToken, profilRuter);
-app.use("/api/varsler", varselRoutes);
+app.use("/api/auth", authRuter); // Auth routes
+app.use("/api/pasienter", verifyToken, pasientRuter); // Pasient routes with authentication
+app.use("/api/meldinger", verifyToken, meldingRuter); // Melding routes with authentication
+app.use("/api/rapporter", verifyToken, rapportRuter); // Rapport routes with authentication
+app.use("/api/profil", verifyToken, profilRuter); // Profil routes with authentication
+app.use("/api/varsler", varselRoutes); // Varsel routes (no need for authentication if public)
+app.use("/api/logg", verifyToken, loggRuter); // Logg routes for økter, requires authentication
 
 // MongoDB Connection
 mongoose
