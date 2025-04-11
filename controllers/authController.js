@@ -55,12 +55,13 @@ const loginUser = async (req, res) => {
     );
 
     // Sett token som en HTTP-only cookie
-    res.cookie("token", token, {
+       res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Bruk secure flagg i produksjon
+      secure: process.env.NODE_ENV === "production",
       sameSite: "strict",
-      maxAge: 3600000, // 1 time
+      maxAge: 3600000,
     });
+    console.log("Cookie satt med token:", token);
 
     res.status(200).json({ message: "Innlogging vellykket" });
   } catch (err) {
