@@ -38,21 +38,8 @@ const limiter = rateLimit({
 app.use(express.json()); // Parse JSON requests
 app.use(cookieParser()); // Parse cookies
 
-const allowedOrigins = [
-  "http://localhost:3000", // Lokal utvikling
-  "https://fysioterapi-frontend-production.up.railway.app", // Hostet frontend (gammel)
-  "https://v25-ga-prosjektoppg.vercel.app", // Hostet frontend (ny)
-];
-
 const corsOptions = {
-  origin: (origin, callback) => {
-    console.log("CORS forespørsel fra origin:", origin);
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      callback(new Error("Ikke tillatt av CORS"));
-    }
-  },
+  origin: true, // Tillat alle opprinnelser
   credentials: true, // Tillat cookies
 };
 
