@@ -38,8 +38,19 @@ const limiter = rateLimit({
 app.use(express.json()); // Parse JSON requests
 app.use(cookieParser()); // Parse cookies
 
+const allowedOrigins = [
+  "http://localhost:3000", // Lokal utvikling
+  "https://v25-ga-prosjektoppg.vercel.app", // Hostet frontend på Vercel
+];
+
 const corsOptions = {
-  origin: true, // Tillat alle opprinnelser
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Ikke tillatt av CORS"));
+    }
+  },
   credentials: true, // Tillat cookies
 };
 
