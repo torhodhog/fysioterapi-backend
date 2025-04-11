@@ -40,7 +40,8 @@ app.use(cookieParser()); // Parse cookies
 
 const allowedOrigins = [
   "http://localhost:3000", // Lokal utvikling
-  "https://fysioterapi-frontend-production.up.railway.app", // Hostet frontend
+  "https://fysioterapi-frontend-production.up.railway.app", // Hostet frontend (gammel)
+  "https://v25-ga-prosjektoppg.vercel.app", // Hostet frontend (ny)
 ];
 
 const corsOptions = {
