@@ -25,7 +25,7 @@ cloudinary.config({
 const app = express();
 
 // Konfigurer Express til å stole på proxyer
-app.set('trust proxy', true);
+app.set("trust proxy", 1); // Stoler på én proxy (Railway) for å unngå IP-baserte begrensninger
 
 // Konfigurer rate-limiting
 const limiter = rateLimit({
