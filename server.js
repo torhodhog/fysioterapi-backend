@@ -34,7 +34,13 @@ const limiter = rateLimit({
 // Middleware
 app.use(express.json()); // Parse JSON requests
 app.use(cookieParser()); // Parse cookies
-app.use(cors()); // Enable CORS for all domains (adjust for production)
+
+const corsOptions = {
+  origin: "http://localhost:3000", // Tillat spesifikk opprinnelse
+  credentials: true, // Tillat cookies
+};
+
+app.use(cors(corsOptions)); // Bruk CORS med spesifikke alternativer
 app.use(limiter); // Bruk rate-limiting på alle ruter
 
 // Import authentication middleware
