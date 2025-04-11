@@ -134,7 +134,6 @@ const leggTilSmerterate = async (req, res) => {
 };
 
 // ✅ Pasienten selv legger inn smerte (uten å vite ID)
-// ✅ Pasienten selv legger inn smerte (uten å vite ID)
 const leggTilEgenSmerte = async (req, res) => {
   try {
     if (req.user.rolle !== "pasient") {
@@ -149,14 +148,14 @@ const leggTilEgenSmerte = async (req, res) => {
       return res.status(400).json({ error: "Smerterate må være mellom 0 og 10" });
     }
 
-  
     pasient.smertehistorikk.push({ verdi, dato: new Date() });
     await pasient.save();
 
-    
     await Varsel.create({
       pasientId: pasient._id,
-      melding: "Pasienten har registrert en ny smerterate.",
+      tekst: "Pasienten har registrert en ny smerterate.",
+      type: "smerte",
+      terapeutId: pasient.terapeut, // Legger til terapeutens ID
     });
 
     res.json({ message: "Smerterate lagt til", pasient });
@@ -164,8 +163,6 @@ const leggTilEgenSmerte = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
-
 
 // ✅ Hent ALT om innlogget pasient (info, tilhørende pasientdata og rapporter)
 const getMyInfo = async (req, res) => {
@@ -209,8 +206,6 @@ const kobleBrukerTilPasient = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-
-
 
 // Eksporter alle funksjoner
 module.exports = {

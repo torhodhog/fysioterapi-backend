@@ -7,12 +7,12 @@ const jwt = require("jsonwebtoken");
 const Bruker = require("../models/Bruker");
 
 const verifyToken = async (req, res, next) => {
-  const token = req.header("Authorization");
+  const token = req.cookies.token; // Hent token fra cookies
 
   if (!token) return res.status(401).json({ error: "Access denied. No token provided." });
 
   try {
-    const verified = jwt.verify(token.replace("Bearer ", ""), process.env.JWT_SECRET);
+    const verified = jwt.verify(token, process.env.JWT_SECRET);
     req.user = verified; // Lagre brukerinfo i req.user
 
     // Hent hele brukerobjektet og legg det til i req.user

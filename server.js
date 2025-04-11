@@ -12,6 +12,8 @@ const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
 const cloudinary = require("cloudinary").v2;
+const cookieParser = require("cookie-parser");
+const rateLimit = require("express-rate-limit");
 
 // Cloudinary Configuration
 cloudinary.config({
@@ -22,9 +24,18 @@ cloudinary.config({
 
 const app = express();
 
+// Konfigurer rate-limiting
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutter
+  max: 100, // Maks 100 forespørsler per IP per vindu
+  message: "For mange forespørsler fra denne IP-en, prøv igjen senere.",
+});
+
 // Middleware
 app.use(express.json()); // Parse JSON requests
+app.use(cookieParser()); // Parse cookies
 app.use(cors()); // Enable CORS for all domains (adjust for production)
+app.use(limiter); // Bruk rate-limiting på alle ruter
 
 // Import authentication middleware
 const verifyToken = require("./middleware/authMiddleware");

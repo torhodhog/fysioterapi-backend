@@ -1,6 +1,7 @@
 // loggController.js
 const Logg = require("../models/Logg");
 const Pasient = require("../models/Pasient");
+const Varsel = require("../models/Varsel");
 
 // Lag ny logg
 const opprettLogg = async (req, res) => {
@@ -32,6 +33,15 @@ const opprettLogg = async (req, res) => {
     });
 
     await nyLogg.save();
+
+    // Opprett et varsel etter at loggen er opprettet
+    await Varsel.create({
+      pasientId: pasient._id,
+      tekst: "En ny logg er registrert av pasienten.",
+      type: "logg",
+      terapeutId: pasient.terapeut, // Koble varselet til terapeutens ID
+    });
+
     res.status(201).json(nyLogg);
   } catch (err) {
     res.status(500).json({ error: err.message });

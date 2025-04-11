@@ -54,7 +54,15 @@ const loginUser = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    res.json({ token });
+    // Sett token som en HTTP-only cookie
+    res.cookie("token", token, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Bruk secure flagg i produksjon
+      sameSite: "strict",
+      maxAge: 3600000, // 1 time
+    });
+
+    res.status(200).json({ message: "Innlogging vellykket" });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
