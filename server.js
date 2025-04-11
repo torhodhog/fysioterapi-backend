@@ -39,9 +39,10 @@ app.use(express.json()); // Parse JSON requests
 app.use(cookieParser()); // Parse cookies
 
 const allowedOrigins = [
-  "http://localhost:3000",
-  "https://fysioterapi-frontend-production.up.railway.app",
+  "http://localhost:3000", // Lokal utvikling
+  "https://fysioterapi-frontend-production.up.railway.app", // Hostet frontend
 ];
+
 const corsOptions = {
   origin: (origin, callback) => {
     if (allowedOrigins.includes(origin) || !origin) {
