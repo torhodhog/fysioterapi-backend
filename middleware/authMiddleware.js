@@ -7,7 +7,7 @@ const jwt = require("jsonwebtoken");
 const Bruker = require("../models/Bruker");
 
 const verifyToken = async (req, res, next) => {
-  const token = req.cookies.token; // Hent token fra cookies
+  const token = req.cookies.token || req.headers.authorization?.split(" ")[1]; // Hent token fra cookie eller Authorization-header
 
   console.log("Token mottatt i middleware:", req.cookies.token);
 
