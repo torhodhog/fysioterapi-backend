@@ -35,8 +35,18 @@ const limiter = rateLimit({
 app.use(express.json()); // Parse JSON requests
 app.use(cookieParser()); // Parse cookies
 
+const allowedOrigins = [
+  "http://localhost:3000",
+  "https://fysioterapi-frontend-production.up.railway.app",
+];
 const corsOptions = {
-  origin: "http://localhost:3000", // Tillat spesifikk opprinnelse
+  origin: (origin, callback) => {
+    if (allowedOrigins.includes(origin) || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error("Ikke tillatt av CORS"));
+    }
+  },
   credentials: true, // Tillat cookies
 };
 
