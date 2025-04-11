@@ -24,6 +24,9 @@ cloudinary.config({
 
 const app = express();
 
+// Konfigurer Express til å stole på proxyer
+app.set('trust proxy', true);
+
 // Konfigurer rate-limiting
 const limiter = rateLimit({
   windowMs: 15 * 60 * 1000, // 15 minutter
