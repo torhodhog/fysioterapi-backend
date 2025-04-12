@@ -14,7 +14,7 @@ const varselSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["melding", "smerte", "rapport", "logg"], // La til "logg" som en gyldig verdi
+      enum: ["melding", "smerte", "rapport", "logg"], 
       required: true,
     },
     tekst: {

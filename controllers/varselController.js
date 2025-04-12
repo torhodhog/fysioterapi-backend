@@ -5,7 +5,10 @@ const Varsel = require("../models/Varsel");
 // Hent alle varsler for en terapeut
 exports.hentVarsler = async (req, res) => {
   try {
-    const varsler = await Varsel.find({ terapeutId: req.user.id });
+    const varsler = await Varsel.find({ terapeutId: req.user.id })
+      .populate("pasientId", "navn") // Hent pasientens navn
+      .populate("terapeutId", "navn"); // Hent terapeutens navn
+
     res.json(varsler);
   } catch (err) {
     res.status(500).json({ error: "Kunne ikke hente varsler" });

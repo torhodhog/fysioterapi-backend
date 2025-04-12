@@ -15,7 +15,8 @@ const registerUser = async (req, res) => {
 
     // Sjekk om e-post allerede er i bruk
     let bruker = await Bruker.findOne({ epost });
-    if (bruker) return res.status(400).json({ error: "E-post allerede i bruk" });
+    if (bruker)
+      return res.status(400).json({ error: "E-post allerede i bruk" });
 
     // Krypter passord
     const salt = await bcrypt.genSalt(10);
@@ -25,7 +26,12 @@ const registerUser = async (req, res) => {
     const brukerRolle = rolle === "terapeut" ? "terapeut" : "pasient";
 
     // Opprett ny bruker
-    bruker = new Bruker({ navn, epost, passord: hashedPassord, rolle: brukerRolle });
+    bruker = new Bruker({
+      navn,
+      epost,
+      passord: hashedPassord,
+      rolle: brukerRolle,
+    });
     await bruker.save();
 
     res.status(201).json({ message: "Bruker opprettet" });
@@ -41,11 +47,13 @@ const loginUser = async (req, res) => {
 
     // Finn bruker i databasen
     const bruker = await Bruker.findOne({ epost });
-    if (!bruker) return res.status(400).json({ error: "Ugyldig e-post eller passord" });
+    if (!bruker)
+      return res.status(400).json({ error: "Ugyldig e-post eller passord" });
 
     // Sjekk passord
     const isMatch = await bcrypt.compare(passord, bruker.passord);
-    if (!isMatch) return res.status(400).json({ error: "Ugyldig e-post eller passord" });
+    if (!isMatch)
+      return res.status(400).json({ error: "Ugyldig e-post eller passord" });
 
     // Generer JWT-token
     const token = jwt.sign(
