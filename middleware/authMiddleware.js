@@ -9,10 +9,11 @@ const Bruker = require("../models/Bruker");
 const verifyToken = async (req, res, next) => {
   const token = req.cookies.token || req.headers.authorization?.split(" ")[1]; // Hent token fra cookie eller Authorization-header
 
-  console.log("Token mottatt i middleware:", req.cookies.token);
-
-  if (!token)
+  if (!token) {
     return res.status(401).json({ error: "Access denied. No token provided." });
+  }
+
+  console.log("Token mottatt i middleware:", req.cookies.token);
 
   try {
     const verified = jwt.verify(token, process.env.JWT_SECRET);

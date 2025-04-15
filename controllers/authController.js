@@ -41,6 +41,7 @@ const registerUser = async (req, res) => {
 };
 
 // Logg inn bruker
+// Logg inn bruker
 const loginUser = async (req, res) => {
   try {
     const { epost, passord } = req.body;
@@ -62,16 +63,18 @@ const loginUser = async (req, res) => {
       { expiresIn: "1h" }
     );
 
-    // Sett token som en HTTP-only cookie
+    // Sett token som en HTTP-only cookie (for web)
     res.cookie("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production", // Bruk secure flagg i produksjon
-      sameSite: "none", // Tillat cross-site cookies
-      maxAge: 3600000, // 1 time
+      secure: process.env.NODE_ENV === "production",
+      sameSite: "none",
+      maxAge: 3600000,
     });
+
     console.log("Cookie satt med token:", token);
 
-    res.status(200).json({ message: "Innlogging vellykket" });
+    // 👇 Returner også token i JSON-respons (for mobil)
+    res.status(200).json({ message: "Innlogging vellykket", token });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
