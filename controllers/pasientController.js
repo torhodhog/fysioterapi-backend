@@ -198,7 +198,7 @@ const kobleBrukerTilPasient = async (req, res) => {
       return res.status(404).json({ error: "Fant ingen pasient med den e-posten" });
     }
 
-    pasient.brukerId = req.user.id; // Koble bruker til pasient
+    pasient.brukerId = req.user.id; 
     await pasient.save();
 
     res.json({ message: "Bruker koblet til pasientprofil", pasient });

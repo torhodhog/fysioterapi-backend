@@ -25,7 +25,7 @@ const opprettLogg = async (req, res) => {
     }
 
     const nyLogg = new Logg({
-      pasientId: pasient._id, // Automatisk koblet til pasientens ID
+      pasientId: pasient._id, 
       smerteVerdi,
       øktOpplevelse,
       trente,
@@ -39,7 +39,7 @@ const opprettLogg = async (req, res) => {
       pasientId: pasient._id,
       tekst: "En ny logg er registrert av pasienten.",
       type: "logg",
-      terapeutId: pasient.terapeut, // Koble varselet til terapeutens ID
+      terapeutId: pasient.terapeut, 
     });
 
     res.status(201).json(nyLogg);
