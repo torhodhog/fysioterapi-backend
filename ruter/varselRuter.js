@@ -14,4 +14,8 @@ router.post("/", auth, varselController.lagVarsel);
 // Sett et varsel som lest
 router.patch("/:id/lest", auth, varselController.settSomLest);
 
+// Slett et varsel
+router.delete("/:id", auth, varselController.slettVarsel);
+
+
 module.exports = router;

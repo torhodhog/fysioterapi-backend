@@ -69,3 +69,20 @@ exports.settSomLest = async (req, res) => {
     res.status(500).json({ error: "Kunne ikke oppdatere varsel" });
   }
 };
+
+// Slett et varsel helt
+exports.slettVarsel = async (req, res) => {
+  try {
+    const varsel = await Varsel.findById(req.params.id);
+    if (!varsel) return res.status(404).json({ error: "Varsel ikke funnet" });
+
+    if (varsel.terapeutId.toString() !== req.user.id)
+      return res.status(403).json({ error: "Ingen tilgang" });
+
+    await varsel.deleteOne();
+    res.json({ success: true });
+  } catch (err) {
+    res.status(500).json({ error: "Kunne ikke slette varsel" });
+  }
+};
+
