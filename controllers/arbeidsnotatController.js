@@ -10,9 +10,11 @@ exports.opprettArbeidsnotat = async (req, res) => {
     const nyttNotat = new Arbeidsnotat({
       pasientId,
       terapeutId: pasient.terapeut,
-      innhold,
+      behandlingsnotat: innhold,
       arbeidsdiagnose,
+      aiForslag: diagnose, 
     });
+    
 
     await nyttNotat.save();
     res.status(201).json(nyttNotat);
