@@ -1,4 +1,5 @@
 const Arbeidsnotat = require("../models/Arbeidsnotat");
+const Pasient = require("../models/Pasient");
 
 // Opprett nytt arbeidsnotat
 exports.opprettArbeidsnotat = async (req, res) => {
