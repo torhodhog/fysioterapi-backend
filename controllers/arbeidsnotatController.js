@@ -12,7 +12,7 @@ exports.opprettArbeidsnotat = async (req, res) => {
       terapeutId: pasient.terapeut,
       behandlingsnotat: innhold,
       arbeidsdiagnose,
-      aiForslag: diagnose, 
+      
     });
     
 
