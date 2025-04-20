@@ -4,10 +4,11 @@ const Arbeidsnotat = require("../models/Arbeidsnotat");
 exports.opprettArbeidsnotat = async (req, res) => {
   try {
     const { pasientId, innhold, arbeidsdiagnose } = req.body;
+    const pasient = await Pasient.findById(pasientId);
 
     const nyttNotat = new Arbeidsnotat({
       pasientId,
-      terapeutId: req.user.id,
+      terapeutId: pasient.terapeut,
       innhold,
       arbeidsdiagnose,
     });
