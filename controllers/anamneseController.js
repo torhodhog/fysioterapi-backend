@@ -10,10 +10,10 @@ const opprettAnamnese = async (req, res) => {
       return res.status(403).json({ error: "Kun terapeuter kan opprette anamnese." });
     }
 
-    const { pasientId, innhold } = req.body;
+    const { pasientId, ...innhold } = req.body;
 
-    if (!pasientId || !innhold) {
-      return res.status(400).json({ error: "Mangler nødvendig informasjon." });
+    if (!pasientId) {
+      return res.status(400).json({ error: "Mangler pasientId." });
     }
 
     const pasient = await Pasient.findById(pasientId);
@@ -24,7 +24,7 @@ const opprettAnamnese = async (req, res) => {
     const ny = await Anamnese.create({
       pasientId,
       terapeutId: req.user.id,
-      innhold,
+      ...innhold,
     });
 
     res.status(201).json(ny);
@@ -53,8 +53,8 @@ const hentAnamneser = async (req, res) => {
 // ✅ Oppdater eksisterende anamnese
 const oppdaterAnamnese = async (req, res) => {
   try {
-    const { id } = req.params;
-    const eksisterende = await Anamnese.findById(id);
+    const { pasientId } = req.params;
+    const eksisterende = await Anamnese.findOne({ pasientId });
 
     if (!eksisterende) {
       return res.status(404).json({ error: "Anamnese ikke funnet." });
@@ -64,7 +64,12 @@ const oppdaterAnamnese = async (req, res) => {
       return res.status(403).json({ error: "Du har ikke tilgang til å endre denne anamnesen." });
     }
 
-    const oppdatert = await Anamnese.findByIdAndUpdate(id, req.body, { new: true });
+    const oppdatert = await Anamnese.findOneAndUpdate(
+      { pasientId },
+      req.body,
+      { new: true }
+    );
+
     res.json(oppdatert);
   } catch (err) {
     console.error("Feil ved oppdatering av anamnese:", err);

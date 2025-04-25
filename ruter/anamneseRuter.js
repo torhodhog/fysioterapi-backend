@@ -16,5 +16,7 @@ const {
 router.post("/", opprettAnamnese);
 router.get("/:pasientId", hentAnamneser); 
 router.delete("/:id", slettAnamnese);
+router.put("/:pasientId", oppdaterAnamnese);
+
 
 module.exports = router;
