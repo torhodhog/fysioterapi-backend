@@ -72,6 +72,8 @@ const arbeidsnotatRuter = require("./ruter/arbeidsnotatRuter");
 const anamneseRuter = require("./ruter/anamneseRuter");
 
 
+
+
 // Define routes
 app.use("/api/auth", authRuter); // Auth routes
 app.use("/api/pasienter", verifyToken, pasientRuter); 
@@ -82,6 +84,8 @@ app.use("/api/varsler", varselRoutes);
 app.use("/api/logg", verifyToken, loggRuter); 
 app.use("/api/arbeidsnotat", verifyToken, arbeidsnotatRuter);
 app.use("/api/anamnese", verifyToken, anamneseRuter);
+
+
 
 
 // MongoDB Connection

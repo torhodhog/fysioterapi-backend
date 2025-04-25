@@ -6,7 +6,7 @@ const loggSchema = new mongoose.Schema({
    smerteVerdi: { type: Number, required: true },
    øktOpplevelse: { 
      type: String, 
-     enum: ["Lett", "Passe", "Vanskelig", "Bra trening", "Sliten", "Andet"], 
+     enum: ["Lett", "Passe", "Vanskelig", "Bra trening", "Sliten", "Annet"], 
      required: true 
    },
    notater: { type: String },
