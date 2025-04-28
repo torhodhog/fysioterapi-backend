@@ -35,12 +35,12 @@ const limiter = rateLimit({
 });
 
 // Middleware
-app.use(express.json()); // Parse JSON requests
-app.use(cookieParser()); // Parse cookies
+app.use(express.json()); 
+app.use(cookieParser()); 
 
 const allowedOrigins = [
-  "http://localhost:3000", // Lokal utvikling
-  "https://v25-ga-prosjektoppg.vercel.app", // Hostet frontend på Vercel
+  "http://localhost:3000", 
+  "https://v25-ga-prosjektoppg.vercel.app", 
 ];
 
 const corsOptions = {
@@ -51,11 +51,11 @@ const corsOptions = {
       callback(new Error("Ikke tillatt av CORS"));
     }
   },
-  credentials: true, // Tillat cookies
+  credentials: true, 
 };
 
-app.use(cors(corsOptions)); // Bruk CORS med spesifikke alternativer
-app.use(limiter); // Bruk rate-limiting på alle ruter
+app.use(cors(corsOptions)); 
+app.use(limiter); 
 
 // Import authentication middleware
 const verifyToken = require("./middleware/authMiddleware");
@@ -70,6 +70,7 @@ const varselRoutes = require("./ruter/varselRuter");
 const loggRuter = require("./ruter/loggRuter"); 
 const arbeidsnotatRuter = require("./ruter/arbeidsnotatRuter");
 const anamneseRuter = require("./ruter/anamneseRuter");
+const treningsprogramRuter = require("./ruter/treningsprogramRuter");
 
 
 
@@ -84,6 +85,7 @@ app.use("/api/varsler", varselRoutes);
 app.use("/api/logg", verifyToken, loggRuter); 
 app.use("/api/arbeidsnotat", verifyToken, arbeidsnotatRuter);
 app.use("/api/anamnese", verifyToken, anamneseRuter);
+app.use("/api/treningsprogram", verifyToken, treningsprogramRuter);
 
 
 
