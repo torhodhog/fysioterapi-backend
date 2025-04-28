@@ -13,7 +13,7 @@ exports.opprettArbeidsnotat = async (req, res) => {
 
     const nyttNotat = new Arbeidsnotat({
       pasientId,
-      terapeutId: pasient.terapeut, 
+      terapeutId: pasient?.terapeut || null, // ✅ ekstra sikkerhet
       behandlingsnotat,
       arbeidsdiagnose,
     });
@@ -71,7 +71,6 @@ exports.slettArbeidsnotat = async (req, res) => {
       return res.status(404).json({ error: "Notat ikke funnet" });
     }
 
-    // Hvis du bruker authMiddleware og vil at kun eier (terapeut) kan slette
     if (notat.terapeutId?.toString() !== req.user.id) {
       return res.status(403).json({ error: "Ingen tilgang til å slette" });
     }
