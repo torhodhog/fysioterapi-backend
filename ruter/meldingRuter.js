@@ -5,10 +5,13 @@
 
 const express = require('express');
 const router = express.Router();
-const { sendMessage, getMessagesForRecipient, deleteMessage } = require('../controllers/meldingController');
+const { sendMessage, sendMessageFromTherapist, getMessagesForRecipient, deleteMessage } = require('../controllers/meldingController');
+
 
 // Route to send a new message
 router.post('/', sendMessage);
+
+router.post('/terapeut', sendMessageFromTherapist);
 
 // Route to get all messages for a specific recipient
 router.get('/:mottakerId', getMessagesForRecipient);

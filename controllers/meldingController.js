@@ -46,6 +46,35 @@ const sendMessage = async (req, res) => {
 };
 
 
+// ✅ Terapeut sender melding til pasient
+const sendMessageFromTherapist = async (req, res) => {
+  try {
+    if (req.user.rolle !== "terapeut") {
+      return res.status(403).json({ error: "Bare terapeuter kan bruke denne ruten" });
+    }
+
+    const { mottakerId, innhold } = req.body;
+
+    if (!mottakerId || !innhold) {
+      return res.status(400).json({ error: "MottakerId og innhold er påkrevd." });
+    }
+
+    const newMessage = new Melding({
+      sender: "terapeut",
+      mottakerId,
+      innhold,
+    });
+
+    await newMessage.save();
+
+    res.status(201).json(newMessage);
+  } catch (err) {
+    console.error("Feil ved sendMessageFromTherapist:", err);
+    res.status(500).json({ error: "Kunne ikke sende melding fra terapeut." });
+  }
+};
+
+
 
 // Retrieve all messages for a specific recipient
 const getMessagesForRecipient = async (req, res) => {
@@ -70,4 +99,4 @@ const deleteMessage = async (req, res) => {
   }
 };
 
-module.exports = { sendMessage, getMessagesForRecipient, deleteMessage };
+module.exports = { sendMessage, sendMessageFromTherapist , getMessagesForRecipient, deleteMessage };
