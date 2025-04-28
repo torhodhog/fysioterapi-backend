@@ -49,6 +49,8 @@ const sendMessage = async (req, res) => {
 // ✅ Terapeut sender melding til pasient
 const sendMessageFromTherapist = async (req, res) => {
   try {
+    console.log("Mottatt i sendMessageFromTherapist:", req.body); // 👈 Legg til denne
+
     if (req.user.rolle !== "terapeut") {
       return res.status(403).json({ error: "Bare terapeuter kan bruke denne ruten" });
     }
