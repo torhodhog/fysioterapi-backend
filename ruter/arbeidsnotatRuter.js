@@ -10,7 +10,7 @@ router.post("/", auth, arbeidsnotatController.opprettArbeidsnotat);
 router.get("/pasient/:pasientId", auth, arbeidsnotatController.hentArbeidsnotaterForPasient);
 
 // Hent ETT spesifikt arbeidsnotat
-router.get("/:notatId", auth, arbeidsnotatController.hentArbeidsnotat);
+router.get("/id/:notatId", auth, arbeidsnotatController.hentArbeidsnotat);
 
 // Slett et arbeidsnotat
 router.delete("/:notatId", auth, arbeidsnotatController.slettArbeidsnotat);

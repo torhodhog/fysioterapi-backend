@@ -4,13 +4,17 @@ const Pasient = require("../models/Pasient");
 // Opprett nytt arbeidsnotat
 exports.opprettArbeidsnotat = async (req, res) => {
   try {
-    const { pasientId, innhold, arbeidsdiagnose } = req.body;
+    const { pasientId, behandlingsnotat, arbeidsdiagnose } = req.body;
+
     const pasient = await Pasient.findById(pasientId);
+    if (!pasient) {
+      return res.status(404).json({ error: "Pasient ikke funnet" });
+    }
 
     const nyttNotat = new Arbeidsnotat({
       pasientId,
-      terapeutId: pasient.terapeut,
-      behandlingsnotat: innhold,
+      terapeutId: pasient.terapeut, 
+      behandlingsnotat,
       arbeidsdiagnose,
     });
 
@@ -29,7 +33,7 @@ exports.hentArbeidsnotaterForPasient = async (req, res) => {
 
     const notater = await Arbeidsnotat.find({ pasientId })
       .populate("terapeutId", "navn")
-      .sort({ createdAt: -1 });
+      .sort({ createdAt: -1 }); // nyeste først
 
     res.json(notater);
   } catch (err) {
@@ -43,7 +47,8 @@ exports.hentArbeidsnotat = async (req, res) => {
   try {
     const { notatId } = req.params;
 
-    const notat = await Arbeidsnotat.findById(notatId).populate("terapeutId", "navn");
+    const notat = await Arbeidsnotat.findById(notatId)
+      .populate("terapeutId", "navn");
 
     if (!notat) {
       return res.status(404).json({ error: "Notat ikke funnet" });
@@ -60,14 +65,15 @@ exports.hentArbeidsnotat = async (req, res) => {
 exports.slettArbeidsnotat = async (req, res) => {
   try {
     const { notatId } = req.params;
-    const notat = await Arbeidsnotat.findById(notatId);
 
+    const notat = await Arbeidsnotat.findById(notatId);
     if (!notat) {
       return res.status(404).json({ error: "Notat ikke funnet" });
     }
 
-    if (notat.terapeutId.toString() !== req.user.id) {
-      return res.status(403).json({ error: "Ingen tilgang" });
+    // Hvis du bruker authMiddleware og vil at kun eier (terapeut) kan slette
+    if (notat.terapeutId?.toString() !== req.user.id) {
+      return res.status(403).json({ error: "Ingen tilgang til å slette" });
     }
 
     await notat.deleteOne();
