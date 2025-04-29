@@ -15,4 +15,6 @@ router.get("/id/:notatId", auth, arbeidsnotatController.hentArbeidsnotat);
 // Slett et arbeidsnotat
 router.delete("/:notatId", auth, arbeidsnotatController.slettArbeidsnotat);
 
+router.get("/siste/pasient/:pasientId", auth, arbeidsnotatController.hentSisteArbeidsnotatForPasient);
+
 module.exports = router;

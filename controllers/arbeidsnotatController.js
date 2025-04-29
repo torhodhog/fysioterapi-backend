@@ -61,6 +61,29 @@ exports.hentArbeidsnotat = async (req, res) => {
   }
 };
 
+// Hent det nyeste arbeidsnotatet for en pasient
+exports.hentSisteArbeidsnotatForPasient = async (req, res) => {
+  try {
+    const { pasientId } = req.params;
+
+    // Hent det nyeste arbeidsnotatet
+    const notat = await Arbeidsnotat.find({ pasientId })
+      .populate("terapeutId", "navn")
+      .sort({ createdAt: -1 }) // Sortere etter nyeste først
+      .limit(1); // Hent kun ett notat (det siste)
+
+    if (!notat || notat.length === 0) {
+      return res.status(404).json({ error: "Ingen arbeidsnotat funnet" });
+    }
+
+    res.json(notat[0]); // Returner det nyeste notatet
+  } catch (err) {
+    console.error("Feil ved henting av siste arbeidsnotat:", err);
+    res.status(500).json({ error: "Kunne ikke hente siste arbeidsnotat" });
+  }
+};
+
+
 // Slett et arbeidsnotat
 exports.slettArbeidsnotat = async (req, res) => {
   try {
