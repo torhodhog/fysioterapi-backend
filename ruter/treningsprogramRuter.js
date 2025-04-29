@@ -27,4 +27,17 @@ router.post("/", async (req, res) => {
   }
 });
 
+router.get("/:pasientId", async (req, res) => {
+  try {
+    const treningsprogram = await Treningsprogram.find({ pasientId: req.params.pasientId });
+    if (!treningsprogram) {
+      return res.status(404).json({ error: "Ingen treningsprogram funnet for denne pasienten" });
+    }
+    res.json(treningsprogram);
+  } catch (err) {
+    console.error("Feil ved henting av treningsprogram:", err);
+    res.status(500).json({ error: "Kunne ikke hente treningsprogram" });
+  }
+});
+
 module.exports = router;
