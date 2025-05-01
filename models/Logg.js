@@ -1,10 +1,9 @@
-// models/Logg.js
 const mongoose = require("mongoose");
 
 const loggSchema = new mongoose.Schema({
   pasientId: { type: mongoose.Schema.Types.ObjectId, ref: "Pasient", required: true },
-  smerteVerdi: { type: Number, required: true },
-  smerteVerdiTrening: { type: Number, required: true },
+  smerteVerdi: { type: Number, required: false }, 
+  smerteVerdiTrening: { type: Number, required: false }, 
   trente: { type: Boolean, required: true },
   øktOpplevelse: { 
     type: String, 
