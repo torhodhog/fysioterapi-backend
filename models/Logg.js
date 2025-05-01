@@ -8,7 +8,7 @@ const loggSchema = new mongoose.Schema({
   øktOpplevelse: { 
     type: String, 
     enum: ["Lett", "Passe", "Vanskelig"], 
-    required: true 
+    required: false 
   },
   notater: { type: String },
   dato: { type: Date, default: Date.now }
