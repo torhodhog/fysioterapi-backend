@@ -19,10 +19,12 @@ const opprettLogg = async (req, res) => {
     }
 
     // Ekstra sjekk for å sikre at vi har de nødvendige dataene i body
-    const { smerteVerdi, øktOpplevelse, trente, notater } = req.body;
-    if (!smerteVerdi || !øktOpplevelse || !trente) {
+    const { smerteVerdi, smerteVerdiTrening, øktOpplevelse, trente, notater } = req.body;
+
+    if (!(smerteVerdi || smerteVerdiTrening) || !øktOpplevelse || !trente) {
       return res.status(400).json({ error: "Mangler nødvendig informasjon i loggen." });
     }
+    
 
     const nyLogg = new Logg({
       pasientId: pasient._id, 
