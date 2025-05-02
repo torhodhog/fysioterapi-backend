@@ -11,10 +11,10 @@ const treningsprogramSchema = new mongoose.Schema({
   øvelser: [
     {
       øvelse: { type: String, required: true },
-      repetisjoner: { type: Number, required: true },
+      repetisjoner: { type: Number, required: false },
       sett: { type: Number, required: true },
       pause: { type: Number, required: true },
-      varighet: { type: Number, required: true },
+      varighet: { type: Number, required: false },
       illustrasjon: { type: String },
       utstyr: { type: String },
       kommentarer: { type: String }
