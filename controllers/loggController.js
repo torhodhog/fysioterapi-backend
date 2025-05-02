@@ -1,5 +1,3 @@
-// test
-
 // loggController.js
 const Logg = require("../models/Logg");
 const Pasient = require("../models/Pasient");
@@ -23,10 +21,15 @@ const opprettLogg = async (req, res) => {
     // Ekstra sjekk for å sikre at vi har de nødvendige dataene i body
     const { smerteVerdi, smerteVerdiTrening, øktOpplevelse, trente, notater } = req.body;
 
-    // Ekstra sjekk for å sikre at vi har nødvendig informasjon i body
-    if (!(smerteVerdi || smerteVerdiTrening) || !øktOpplevelse || !trente) {
-      return res.status(400).json({ error: "Mangler nødvendig informasjon i loggen." });
-    }
+    // // Ekstra sjekk for å sikre at vi har nødvendig informasjon i body
+    // if (!(smerteVerdi || smerteVerdiTrening) || !øktOpplevelse || !trente) {
+    //   return res.status(400).json({ error: "Mangler nødvendig informasjon i loggen." });
+    // }
+
+        // Ekstra sjekk for å sikre at vi har nødvendig informasjon i body
+        if (!(smerteVerdi || smerteVerdiTrening) || !trente) {
+          return res.status(400).json({ error: "Mangler nødvendig informasjon i loggen." });
+        }
     
     // Opprett en ny logg med smerteverdi eller trening-verdi, og andre nødvendige felter
     const nyLogg = new Logg({
