@@ -22,6 +22,11 @@ router.post("/", async (req, res) => {
     await nyttTreningsprogram.save();
     res.status(201).json(nyttTreningsprogram);
   } catch (err) {
+     // feilmelding om du har reps og tid
+    if(err.name === "ValidationError") {
+      return res.status(400).json({error: err.message});
+    }
+    
     console.error("Feil ved oppretting av treningsprogram:", err);
     res.status(500).json({ error: "Kunne ikke opprette treningsprogram" });
   }
