@@ -1,3 +1,5 @@
+// test
+
 // loggController.js
 const Logg = require("../models/Logg");
 const Pasient = require("../models/Pasient");
