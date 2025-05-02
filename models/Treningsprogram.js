@@ -22,4 +22,16 @@ const treningsprogramSchema = new mongoose.Schema({
   ]
 }, { timestamps: true });
 
+treningsprogramSchema.path("øvelser").validate({
+  validator: function (øvelser) {
+    return øvelser.every(øvelse => {
+      const harRepetisjoner = typeof øvelse.repetisjoner === 'number';
+      const harVarighet = typeof øvelse.varighet === 'number';
+
+      return (harRepetisjoner || harVarighet) && !(harRepetisjoner && harVarighet);
+    });
+  },
+  message: "En øvelse kan bare ha repetisjoner eller varighet, velg en av dem"
+})
+
 module.exports = mongoose.model('Treningsprogram', treningsprogramSchema);
