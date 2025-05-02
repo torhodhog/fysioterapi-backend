@@ -27,7 +27,7 @@ const opprettLogg = async (req, res) => {
     // }
 
         // Ekstra sjekk for å sikre at vi har nødvendig informasjon i body
-        if (!(smerteVerdi || smerteVerdiTrening) || !trente) {
+        if (!(smerteVerdi || smerteVerdiTrening) || typeof trente !== "boolean") {
           return res.status(400).json({ error: "Mangler nødvendig informasjon i loggen." });
         }
     
