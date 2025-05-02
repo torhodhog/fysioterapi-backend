@@ -21,20 +21,23 @@ const opprettLogg = async (req, res) => {
     // Ekstra sjekk for å sikre at vi har de nødvendige dataene i body
     const { smerteVerdi, smerteVerdiTrening, øktOpplevelse, trente, notater } = req.body;
 
+    // Ekstra sjekk for å sikre at vi har nødvendig informasjon i body
     if (!(smerteVerdi || smerteVerdiTrening) || !øktOpplevelse || !trente) {
       return res.status(400).json({ error: "Mangler nødvendig informasjon i loggen." });
     }
     
-
+    // Opprett en ny logg med smerteverdi eller trening-verdi, og andre nødvendige felter
     const nyLogg = new Logg({
       pasientId: pasient._id, 
-      smerteVerdi,
+      smerteVerdi,  
+      smerteVerdiTrening,  
       øktOpplevelse,
       trente,
       notater,
     });
-
+    
     await nyLogg.save();
+    
 
     // Opprett et varsel etter at loggen er opprettet
     await Varsel.create({
