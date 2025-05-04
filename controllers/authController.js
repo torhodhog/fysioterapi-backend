@@ -40,7 +40,7 @@ const registerUser = async (req, res) => {
   }
 };
 
-// Logg inn bruker
+
 // Logg inn bruker
 const loginUser = async (req, res) => {
   try {
@@ -80,6 +80,19 @@ const loginUser = async (req, res) => {
   }
 };
 
+// Logg ut bruker
+const logoutUser = (req, res) => {
+  res.clearCookie("token", {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "none",
+  });
+  return res.status(200).json({ message: "Bruker logget ut" });
+};
+
+
+
+
 // Hent innlogget bruker
 const getMe = async (req, res) => {
   try {
@@ -93,4 +106,4 @@ const getMe = async (req, res) => {
   }
 };
 
-module.exports = { registerUser, loginUser, getMe };
+module.exports = { registerUser, loginUser, getMe, logoutUser };

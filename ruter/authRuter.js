@@ -6,7 +6,7 @@
 */
 
 const express = require("express");
-const { registerUser, loginUser, getMe } = require("../controllers/authController");
+const { registerUser, loginUser, getMe, logoutUser } = require("../controllers/authController");
 const verifyToken = require("../middleware/authMiddleware");
 
 const router = express.Router();
@@ -14,6 +14,7 @@ const router = express.Router();
 // Brukerruter
 router.post("/register", registerUser);
 router.post("/login", loginUser);
+router.post("/logout", logoutUser)
 router.get("/me", verifyToken, getMe); // Krever autentisering
 
 module.exports = router;
