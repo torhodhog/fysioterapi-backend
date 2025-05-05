@@ -2,7 +2,7 @@ const Treningsprogram = require("../models/Treningsprogram");
 const Arbeidsnotat = require("../models/Arbeidsnotat");
 
 // Opprett nytt treningsprogram
-exports.opprettTreningsprogram = async (req, res) => {
+const opprettTreningsprogram = async (req, res) => {
   try {
     const { pasientId, øvelser, rapportId } = req.body;
 
@@ -31,3 +31,17 @@ exports.opprettTreningsprogram = async (req, res) => {
     res.status(500).json({ error: "Kunne ikke opprette treningsprogram" });
   }
 };
+
+// Delete a workout program
+const deleteTreningsprogram = async (req, res) => {
+  try {
+    const deletedWorkoutProgram = await Treningsprogram.findByIdAndDelete(req.params.id);
+    if (!deletedWorkoutProgram) return res.status(404).json({ error: "Workout program not found" });
+    res.json({ message: "Workout program deleted successfully" });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+
+module.exports = {opprettTreningsprogram, deleteTreningsprogram };

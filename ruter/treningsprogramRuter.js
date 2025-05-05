@@ -2,6 +2,7 @@
 
 const express = require('express');
 const Treningsprogram = require('../models/Treningsprogram');
+const { deleteTreningsprogram } = require('../controllers/treningsprogramController');
 const router = express.Router();
 
 // Opprett nytt treningsprogram
@@ -26,7 +27,7 @@ router.post("/", async (req, res) => {
     if(err.name === "ValidationError") {
       return res.status(400).json({error: err.message});
     }
-    
+
     console.error("Feil ved oppretting av treningsprogram:", err);
     res.status(500).json({ error: "Kunne ikke opprette treningsprogram" });
   }
@@ -44,5 +45,10 @@ router.get("/:pasientId", async (req, res) => {
     res.status(500).json({ error: "Kunne ikke hente treningsprogram" });
   }
 });
+
+
+// Route to delete a report
+router.delete('/:id', deleteTreningsprogram);
+
 
 module.exports = router;
